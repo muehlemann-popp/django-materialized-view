@@ -1,0 +1,7 @@
+include README.md
+include LICENSE
+recursive-include docs *
+
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+recursive-exclude * *.orig
