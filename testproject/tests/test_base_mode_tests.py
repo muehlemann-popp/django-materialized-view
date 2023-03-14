@@ -1,15 +1,15 @@
 import hashlib
 from collections import OrderedDict
-from unittest.mock import call, MagicMock
+from unittest.mock import MagicMock, call
 
 import pytest
 from django.db import InternalError
 from pytest_django.asserts import assertNumQueries
 
-from django_materialized_view.models import MaterializedViewMigrations
-from testproject.tests.factories import MaterializedViewMigrationsFactory
 from django_materialized_view.base_model import DBViewsRegistry
+from django_materialized_view.models import MaterializedViewMigrations
 from django_materialized_view.processor import MaterializedViewsProcessor
+from testproject.tests.factories import MaterializedViewMigrationsFactory
 
 
 class TestMaterializedViewsProcessor:

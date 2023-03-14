@@ -2,7 +2,7 @@ from unittest.mock import call
 
 from django.db import NotSupportedError
 
-from django_materialized_view.management.commands.migrate_with_views import extract_mv_name, Command
+from django_materialized_view.management.commands.migrate_with_views import Command, extract_mv_name
 from django_materialized_view.processor import MaterializedViewsProcessor
 
 
@@ -26,7 +26,9 @@ class TestCommand:
         call_command_mock = mocker.patch("django_materialized_view.management.commands.migrate_with_views.call_command")
         call_command_mock.side_effect = [NotSupportedError(error_message), None]
 
-        extract_mv_name_mock = mocker.patch("django_materialized_view.management.commands.migrate_with_views.extract_mv_name")
+        extract_mv_name_mock = mocker.patch(
+            "django_materialized_view.management.commands.migrate_with_views.extract_mv_name"
+        )
         extract_mv_name_mock.return_value = view_name
 
         get_sorted_list_mock = mocker.patch.object(MaterializedViewsProcessor, "get_view_list_sorted_by_dependencies")

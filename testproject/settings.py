@@ -2,7 +2,8 @@
 """
 Settings for test.
 """
-from __future__ import unicode_literals, absolute_import
+from __future__ import absolute_import, unicode_literals
+
 import os
 
 DEBUG = True
@@ -18,11 +19,11 @@ DATABASES = {
     "default": {
         "ENGINE": f"django.db.backends.{DB_ENGINE}",
         "NAME": os.environ.get("DB_NAME", "postgres"),
-        "USER": os.environ.get("DB_USER", 'postgres'),
+        "USER": os.environ.get("DB_USER", "postgres"),
         "PASSWORD": os.environ.get("DB_PASSWORD", "postgres"),
         "HOST": os.environ.get("DB_HOST", "127.0.0.1"),
         "PORT": os.environ.get("DB_PORT", 5432),
-        "ATOMIC_REQUESTS": True
+        "ATOMIC_REQUESTS": True,
     },
 }
 
@@ -32,5 +33,5 @@ INSTALLED_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sites",
-    'django_materialized_view'
+    "django_materialized_view",
 ]

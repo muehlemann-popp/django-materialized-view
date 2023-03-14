@@ -1,12 +1,11 @@
 import hashlib
 import logging
 import re
-from collections import defaultdict, OrderedDict
-from typing import Set, List, Dict, Optional, Tuple
+from collections import OrderedDict, defaultdict
+from typing import Dict, List, Optional, Set, Tuple
 
 from django.apps import apps
-from django.db import connection, ProgrammingError, InternalError
-
+from django.db import InternalError, ProgrammingError, connection
 
 from django_materialized_view.base_model import DBViewsRegistry, MaterializedViewModel
 from django_materialized_view.models import MaterializedViewMigrations

@@ -1,0 +1,42 @@
+exclude: docs|node_modules|migrations|.tox
+default_stages: [commit]
+fail_fast: true
+
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.4.0
+  hooks:
+  - id: trailing-whitespace
+    exclude: static
+  - id: end-of-file-fixer
+    exclude: static
+  - id: pretty-format-json
+    args: [--autofix]
+
+- repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+  rev: v2.4.0
+  hooks:
+  - id: pretty-format-yaml
+    args: [--autofix, --indent, '2']
+
+- repo: https://github.com/timothycrosley/isort
+  rev: 5.10.1
+  hooks:
+  - id: isort
+
+- repo: https://github.com/psf/black
+  rev: 22.3.0
+  hooks:
+  - id: black
+
+- repo: https://github.com/pycqa/flake8
+  rev: 3.9.2
+  hooks:
+  - id: flake8
+    additional_dependencies: [flake8-isort]
+
+- repo: https://github.com/pre-commit/mirrors-mypy
+  rev: v0.982
+  hooks:
+  - id: mypy
+    args: [--install-types, --non-interactive]

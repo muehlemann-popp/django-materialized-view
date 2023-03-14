@@ -2,9 +2,9 @@ name: Test
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
@@ -26,30 +26,30 @@ jobs:
           --health-retries 5
 
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
 
-      - name: Install Dependencies
-        run: |
-          pip install poetry
-          poetry config virtualenvs.in-project true
-          poetry run python -m ensurepip --upgrade
-          poetry install --no-interaction
+    - name: Install Dependencies
+      run: |
+        pip install poetry
+        poetry config virtualenvs.in-project true
+        poetry run python -m ensurepip --upgrade
+        poetry install --no-interaction
 
-      - name: Run Tests
-        run: |
-          poetry run coverage run -m pytest
-          
-      - name: Generate Report
-        run: |
-          poetry run coverage xml
-          poetry run coverage report
+    - name: Run Tests
+      run: |
+        poetry run coverage run -m pytest
 
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
+    - name: Generate Report
+      run: |
+        poetry run coverage xml
+        poetry run coverage report
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3

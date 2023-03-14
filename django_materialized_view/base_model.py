@@ -172,5 +172,3 @@ class MaterializedViewModel(DBMaterializedView):
     @classmethod
     def get_tablename(cls) -> str:
         return f"{cls.__get_app_label()}_{cls.__get_class_name()}"
-
-

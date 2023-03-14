@@ -7,16 +7,17 @@
 [![Supported Django versions](https://img.shields.io/pypi/djversions/django-materialized-view.svg)](https://pypi.python.org/pypi/django-materialized-view)
 ![PyPI](https://img.shields.io/pypi/v/django-materialized-view)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/django-materialized-view)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/django-materialized-view)
 
 
-Materialized View support for the Django framework. Django (in general) does not support materialized views by the default 
-therefor migrations are not created automatically with `./manage.py makemigrations`. 
-This library provides new `manage.py` command: `./manage.py migrate_with_views`. 
+Materialized View support for the Django framework. Django (in general) does not support materialized views by the default
+therefor migrations are not created automatically with `./manage.py makemigrations`.
+This library provides new `manage.py` command: `./manage.py migrate_with_views`.
 This command is to be used instead of the default one `migrate`.
 
-This command automatically finds your materialized view models and keeps them up to date. 
+This command automatically finds your materialized view models and keeps them up to date.
 In case when materialized view is a parent view for another materialized view, use `migrate_with_views` command
-in order to change query of parent materialized view. 
+in order to change query of parent materialized view.
 `migrate_with_views` command finds all related materialized views and recreates them sequentially.
 
 ## Contents
@@ -65,7 +66,7 @@ Then you can use new migrate command instead of the default one:
 python manage.py migrate_with_views
 ```
 
-This command will automatically begin interception of materialized view models, 
+This command will automatically begin interception of materialized view models,
 and proceed to create/delete/update your view on your DB if required.
 
 ## Usage
@@ -88,9 +89,9 @@ and proceed to create/delete/update your view on your DB if required.
         from_seconds = models.IntegerField()
         to_seconds = models.IntegerField()
         type = models.CharField(max_length=255)
-   
+
         def get_query_from_queryset(self):
-            # define this method only in case use queryset as a query for materialized view. 
+            # define this method only in case use queryset as a query for materialized view.
             # Method must return Queryset
             pass
     ```
@@ -130,7 +131,7 @@ and proceed to create/delete/update your view on your DB if required.
          ./manage.py migrate_with_views
          ```
          This command will run default `migrate` command and apply materialized views
-3. ### Use `refresh` method to update materialized view data. 
+3. ### Use `refresh` method to update materialized view data.
     1. For updating concurrently:
        ```
        MyViewModel.refresh()
@@ -147,6 +148,16 @@ and proceed to create/delete/update your view on your DB if required.
         failed = models.BooleanField(default=False)
         view_name = models.CharField(max_length=255)
     ```
-   
-### Development
-- Release CI triggered on tags. To release new version, create the release with new tag on GitHub
+
+## Development
+- #### Release CI triggered on tags. To release new version, create the release with new tag on GitHub
+
+- #### For integration with pytest add following fixture:
+
+    ```python
+    @pytest.fixture(scope="session")
+    def django_db_setup(django_db_setup, django_db_blocker):
+        with django_db_blocker.unblock():
+            view_processor = MaterializedViewsProcessor()
+            view_processor.process_materialized_views()
+    ```
