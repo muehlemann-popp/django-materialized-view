@@ -5,7 +5,6 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/muehlemann-popp/django-materialized-view)
 
 [![Supported Django versions](https://img.shields.io/pypi/djversions/django-materialized-view.svg)](https://pypi.python.org/pypi/django-materialized-view)
-![PyPI - Downloads](https://img.shields.io/pypi/dd/django-materialized-view)
 ![PyPI](https://img.shields.io/pypi/v/django-materialized-view)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/django-materialized-view)
 
@@ -148,3 +147,6 @@ and proceed to create/delete/update your view on your DB if required.
         failed = models.BooleanField(default=False)
         view_name = models.CharField(max_length=255)
     ```
+   
+### Development
+- Release CI triggered on tags. To release new version, create the release with new tag on GitHub
