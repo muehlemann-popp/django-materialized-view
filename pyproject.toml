@@ -2,7 +2,7 @@
 name = "django-materialized-view"
 version = "0.1.0"
 description = ""
-authors = ["Farruh Sheripov <sheripov.farruh@gmail.com>"]
+authors = ["Farruh Sheripov <farruh.sheripov@muehlemann-popp.ch>"]
 readme = "README.md"
 packages = [{include = "django_materialized_view"}]
 

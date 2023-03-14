@@ -63,7 +63,7 @@ class MaterializedViewModel(DBMaterializedView):
     from core.models.materialized_view import MaterializedViewModel
 
     class JiraTimeestimateChangelog(MaterializedViewModel):
-        create_pkey_index = True  # if you need add uniq field as a primary kay and create indexes
+        create_pkey_index = True  # if you need add unique field as a primary key and create indexes
 
         class Meta:
             managed = False
