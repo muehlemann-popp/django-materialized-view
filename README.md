@@ -38,6 +38,7 @@ django-materialized-view has been tested with:
 
 * Django: 4.0, 4.1
 * Python: 3.9, 3.10, 3.11
+* Postgres >= 13
 
 ## Installation
 

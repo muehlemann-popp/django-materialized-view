@@ -132,7 +132,7 @@ class MaterializedViewModel(DBMaterializedView):
     @classmethod
     def __get_sql_file_path(cls) -> str:
         return (
-            f"{settings.SRC_DIR}/{cls.__get_app_label()}"
+            f"{settings.BASE_DIR}/{cls.__get_app_label()}"
             f"/models/materialized_views/sql_files/{cls.__get_class_name()}.sql"
         )
 
