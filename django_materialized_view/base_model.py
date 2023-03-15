@@ -97,12 +97,14 @@ class MaterializedViewModel(DBMaterializedView):
         abstract = True
 
     @classmethod
-    def refresh(cls, using: Optional[str] = None, concurrently: bool = True) -> None:
+    def refresh(cls, using: Optional[str] = None, concurrently: Optional[bool] = None) -> None:
         log = MaterializedViewRefreshLog(
             view_name=cls.get_tablename(),
         )
         try:
             start_time = time.monotonic()
+            if concurrently is None:
+                concurrently = cls.create_pkey_index is True
             super().refresh(using=using, concurrently=concurrently)
             end_time = time.monotonic()
             log.duration = datetime.timedelta(seconds=end_time - start_time)
