@@ -26,8 +26,8 @@ in order to change query of parent materialized view.
 * [Installation](#installation)
 * [Usage](#Usage)
   * [Create class and inherit from MaterializedViewModel](#create-class-and-inherit-from-materializedviewmodel)
-  * [Add materialized view query](#add-materialized-view-query)
-    * [Create materialized view query with .sql file](#create-materialized-view-query-with-sql-file)
+  * [Add materialized view query (You can create a materialized view either from Raw SQL or from a queryset)](#add-materialized-view-query-you-can-create-a-materialized-view-either-from-raw-sql-or-from-a-queryset)
+    * [Create materialized view from Raw SQL](#create-materialized-view-from-raw-sql)
     * [Create materialized view query from Queryset](#create-materialized-view-query-from-queryset)
   * [Use refresh method to update materialized view data](#use-refresh-method-to-update-materialized-view-data)
 
@@ -91,13 +91,15 @@ and proceed to create/delete/update your view on your DB if required.
         to_seconds = models.IntegerField()
         type = models.CharField(max_length=255)
 
-        def get_query_from_queryset(self):
+        # ATTENTION: this method must be a staticmethod or classmethod
+        @staticmethod
+        def get_query_from_queryset():
             # define this method only in case use queryset as a query for materialized view.
             # Method must return Queryset
             pass
     ```
-2. ### Add materialized view query
-   - #### Create materialized view query with .sql file
+2. ### Add materialized view query (You can create a materialized view either from Raw SQL or from a queryset)
+   - #### Create materialized view from Raw SQL
       1. run django default `makemigrations` command for creating model migrations if necessary:
          ```
          ./manage.py makemigrations
@@ -124,7 +126,9 @@ and proceed to create/delete/update your view on your DB if required.
          ```
       2. add to your materialized view model the method `get_query_from_queryset`:
           ```python
-           def get_query_from_queryset(self):
+         # ATTENTION: this method must be a staticmethod or classmethod
+         @staticmethod
+           def get_query_from_queryset():
                return SomeModel.objects.all()
           ```
       3. run django command `migrate_with_views`:
