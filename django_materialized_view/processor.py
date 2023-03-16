@@ -1,6 +1,5 @@
 import hashlib
 import logging
-import re
 from collections import OrderedDict, defaultdict
 from typing import Dict, List, Optional, Set, Tuple
 
@@ -318,6 +317,5 @@ class MaterializedViewsProcessor:
 
     @staticmethod
     def __separate_app_name_and_view_name(full_view_name: str) -> Tuple[str, str]:
-        assert re.match(r"^[a-zA-Z]+_[a-zA-Z]+$", full_view_name), "Invalid view name"
-        app_name, view_name = full_view_name.split("_")
+        app_name, view_name = full_view_name.rsplit("_", 1)
         return app_name, view_name

@@ -31,14 +31,6 @@ class TestMaterializedViewsProcessor:
         )
         assert (test_app_name, test_view_name) == (app_name, view_name)
 
-    def test__separate_app_name_and_view_name__invalid(self):
-        test_app_name = "app"
-        test_view_name = "view_name"
-        full_view_name = f"{test_app_name}_{test_view_name}"
-        with pytest.raises(AssertionError) as exc:
-            self.view_processor._MaterializedViewsProcessor__separate_app_name_and_view_name(full_view_name)
-        assert exc.value.args == ("Invalid view name",)
-
     def test__get_current_view_models__success(self):
         view_models = self.view_processor._MaterializedViewsProcessor__get_current_view_models()
         assert isinstance(view_models, dict)

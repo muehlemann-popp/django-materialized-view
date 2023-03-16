@@ -12,7 +12,6 @@ USE_TZ = True
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "**************************************************"
 
-# Note, this package only works with PostgreSQL due to the JSONField
 DB_ENGINE = os.environ.get("DB_ENGINE", "postgresql")
 
 DATABASES = {
@@ -23,7 +22,6 @@ DATABASES = {
         "PASSWORD": os.environ.get("DB_PASSWORD", "postgres"),
         "HOST": os.environ.get("DB_HOST", "127.0.0.1"),
         "PORT": os.environ.get("DB_PORT", 5432),
-        "ATOMIC_REQUESTS": True,
     },
 }
 
