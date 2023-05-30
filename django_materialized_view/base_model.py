@@ -1,7 +1,7 @@
 import datetime
 import logging
 import time
-from typing import Callable, Dict, Optional, Union
+from typing import Callable, Dict, Optional, Union, Tuple
 
 from django.conf import settings
 from django.db import DEFAULT_DB_ALIAS, connections, models
@@ -114,7 +114,7 @@ class MaterializedViewModel(DBMaterializedView):
         log.save()
 
     @classmethod
-    def view_definition(cls):
+    def view_definition(cls) -> Tuple[str, tuple]:
         return cls.__get_query()
 
     @classmethod
@@ -150,18 +150,18 @@ class MaterializedViewModel(DBMaterializedView):
         pass
 
     @classmethod
-    def __get_query(cls) -> str:
+    def __get_query(cls, *args) -> Tuple[str, tuple]:
         queryset = cls.get_query_from_queryset()
-
         if isinstance(queryset, QuerySet):
-            sql_query = f"{queryset.query}; {cls.__create_index_for_primary_key()}"
-            return sql_query
+            query, args = queryset.query.sql_with_params()
+            sql_query = f"{query}; {cls.__create_index_for_primary_key()}"
+            return sql_query, args
         try:
             with open(cls.__get_sql_file_path(), "r") as sql_file:
                 sql_query = f"{sql_file.read()}; {cls.__create_index_for_primary_key()}"
         except FileNotFoundError as exc:
             raise FileNotFoundError(f"{exc}, - please create SQL file and put it to this directory")
-        return sql_query
+        return sql_query, args
 
     @classmethod
     def __get_class_name(cls) -> str:

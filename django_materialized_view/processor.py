@@ -51,8 +51,8 @@ class MaterializedViewsProcessor:
         view_models = self.__get_current_view_models()
         for (app_label, model_name), view_model in view_models.items():
             view_name = self.__get_view_name(app_label, model_name)
-            actual_view_definition = self.__get_actual_view_definition(view_name)
-            actual_view_definition_hash = self.__get_hash_from_string(actual_view_definition)
+            actual_view_definition, args = self.__get_actual_view_definition(view_name)
+            actual_view_definition_hash = self.__get_hash_from_string(actual_view_definition % args)
 
             previous_view_definition_hash = self.__get_previous_view_definition_hash(app_label, model_name)
 
@@ -127,10 +127,10 @@ class MaterializedViewsProcessor:
     def _create_view(self, view_name: str) -> bool:
         logger.debug(f"Creating view: {view_name}")
 
-        view_definition = self.__get_actual_view_definition(view_name)
+        view_definition, args = self.__get_actual_view_definition(view_name)
         with connection.cursor() as cursor:
             try:
-                cursor.execute(self.CREATE_COMMAND_TEMPLATE % (view_name, view_definition))
+                cursor.execute(self.CREATE_COMMAND_TEMPLATE % (view_name, view_definition), args)
             except ProgrammingError as exc:
                 logger.debug(f"Unable to create view: {view_name}. Error: {exc.args}")
                 if "already exists" in exc.args[0]:
@@ -224,11 +224,11 @@ class MaterializedViewsProcessor:
     def __get_actual_view_definition(self, view_name: str) -> str:
         view_model = DBViewsRegistry[view_name]
         if callable(view_model.view_definition):
-            raw_view_definition = view_model.view_definition()
+            raw_view_definition, args = view_model.view_definition()
         else:
-            raw_view_definition = view_model.view_definition
+            raise ValueError("view_definition must be callable")
         view_definition = self.__get_cleaned_view_definition_value(raw_view_definition)
-        return view_definition
+        return view_definition, args
 
     def __prioritize_view(self, view: str, related_views: List[str], dependencies_story: set[str]) -> None:
         if related_views:
@@ -277,7 +277,7 @@ class MaterializedViewsProcessor:
     def __get_cleaned_view_definition_value(view_definition: str) -> str:
         assert isinstance(
             view_definition, str
-        ), "View definition must be callable and return string or be itself a string."
+        ), "View definition must be callable and return Tuple[str, Optional[tuple]]."
         return view_definition.strip()
 
     @staticmethod
