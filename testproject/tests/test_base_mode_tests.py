@@ -91,7 +91,7 @@ class TestMaterializedViewsProcessor:
     def test__get_cleaned_view_definition_value__invalid(self):
         with pytest.raises(AssertionError) as exc:
             self.view_processor._MaterializedViewsProcessor__get_cleaned_view_definition_value(1)
-        assert exc.value.args == ("View definition must be callable and return string or be itself a string.",)
+        assert exc.value.args == ("View definition must be callable and return Tuple[str, Optional[tuple]].",)
 
     @pytest.mark.django_db
     def test__get_related_views__success(self):
@@ -130,6 +130,7 @@ class TestMaterializedViewsProcessor:
         test_view_definition = "test"
         with subtests.test(msg="view_definition callable"):
             test_view_mock = MagicMock()
+            test_view_mock.view_definition.return_value = ("test raw query", ())
             DBViewsRegistry[test_view_definition] = test_view_mock
             get_cleaned_view_mock = mocker.patch.object(
                 MaterializedViewsProcessor,
@@ -139,22 +140,8 @@ class TestMaterializedViewsProcessor:
 
             result = self.view_processor._MaterializedViewsProcessor__get_actual_view_definition("test")
 
-            get_cleaned_view_mock.assert_called_once_with(test_view_mock.view_definition())
-            assert result == test_view_definition
-
-        with subtests.test(msg="view_definition is str"):
-            test_view_mock = MagicMock()
-            test_view_mock.view_definition = "test"
-            DBViewsRegistry[test_view_definition] = test_view_mock
-            get_cleaned_view_mock = mocker.patch.object(
-                MaterializedViewsProcessor,
-                "_MaterializedViewsProcessor__get_cleaned_view_definition_value",
-                return_value=test_view_definition,
-            )
-
-            result = self.view_processor._MaterializedViewsProcessor__get_actual_view_definition("test")
-            get_cleaned_view_mock.assert_called_once_with(test_view_mock.view_definition)
-            assert result == test_view_definition
+            get_cleaned_view_mock.assert_called_once_with("test raw query")
+            assert result == (test_view_definition, ())
 
     def test__get_ref_views__success(self, mocker):
         ref_view_name = "test_ref_view"
@@ -325,7 +312,7 @@ class TestMaterializedViewsProcessor:
         test_view_name = "viewname"
         full_view_name = f"{test_app_name}_{test_view_name}"
 
-        view_definition = "SELECT * FROM pg_depend"
+        view_definition = "SELECT * FROM pg_depend", ()
         get_actual_view_definition_mock = mocker.patch.object(
             MaterializedViewsProcessor,
             "_MaterializedViewsProcessor__get_actual_view_definition",
