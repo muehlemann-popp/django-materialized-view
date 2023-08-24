@@ -52,8 +52,9 @@ class MaterializedViewsProcessor:
         for (app_label, model_name), view_model in view_models.items():
             view_name = self.__get_view_name(app_label, model_name)
             actual_view_definition, args = self.__get_actual_view_definition(view_name)
-            actual_view_definition_hash = self.__get_hash_from_string(actual_view_definition % args)
-
+            actual_view_definition_hash = self.__get_hash_from_string(
+                actual_view_definition % args if args else actual_view_definition
+            )
             previous_view_definition_hash = self.__get_previous_view_definition_hash(app_label, model_name)
 
             if previous_view_definition_hash is None:
