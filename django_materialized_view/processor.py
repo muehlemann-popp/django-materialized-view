@@ -134,7 +134,8 @@ class MaterializedViewsProcessor:
                 command_view = self.CREATE_COMMAND_TEMPLATE % (view_name, view_definition)
                 if args:
                     cursor.execute(command_view, args)
-                cursor.execute(command_view)
+                else:
+                    cursor.execute(command_view)
             except ProgrammingError as exc:
                 logger.debug(f"Unable to create view: {view_name}. Error: {exc.args}")
                 if "already exists" in exc.args[0]:
