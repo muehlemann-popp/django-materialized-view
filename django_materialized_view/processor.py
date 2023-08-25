@@ -131,7 +131,10 @@ class MaterializedViewsProcessor:
         view_definition, args = self.__get_actual_view_definition(view_name)
         with connection.cursor() as cursor:
             try:
-                cursor.execute(self.CREATE_COMMAND_TEMPLATE % (view_name, view_definition), args)
+                command_view = self.CREATE_COMMAND_TEMPLATE % (view_name, view_definition)
+                if args:
+                    cursor.execute(command_view, args)
+                cursor.execute(command_view)
             except ProgrammingError as exc:
                 logger.debug(f"Unable to create view: {view_name}. Error: {exc.args}")
                 if "already exists" in exc.args[0]:
@@ -146,7 +149,7 @@ class MaterializedViewsProcessor:
         logger.debug(f"View created: {view_name} ")
         logger.debug(f"Creating migration: {view_name}")
         app, model_view_name = self.__separate_app_name_and_view_name(view_name)
-        actual_view_definition_hash = self.__get_hash_from_string(view_definition % args)
+        actual_view_definition_hash = self.__get_hash_from_string(view_definition % args if args else view_definition)
         migration = MaterializedViewMigrations(app=app, view_name=model_view_name, hash=actual_view_definition_hash)
         migration.save()
         logger.debug(f"Migration created: {view_name}. migration_id={migration.pk}")
